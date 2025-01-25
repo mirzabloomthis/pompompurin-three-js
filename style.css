@@ -1,11 +1,30 @@
-/* Reset browser defaults */
+@font-face {
+  font-family: 'yeyey';
+  src: url('/fonts/Yeyey-1pK2.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body, html {
   margin: 0;
   padding: 0;
   overflow: hidden;
   height: 100%;
-  font-family: Arial, sans-serif;
-  background-color: rgba(247, 255, 179, 0.8);
+  background-image: url("/pudding_caramel.png");
+  background-size: cover;
+}
+
+/* wording - Centered at the top */
+.wording {
+  position: absolute;
+  top: 20px; /* Adjust the distance from the top */
+  left: 50%;
+  transform: translateX(-50%); /* Centers the text horizontally */
+  font-family: 'yeyey';
+  font-size: 36px; /* Set your desired font size */
+  color: #fff; /* Text color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Optional text shadow */
+  z-index: 10; /* Ensure the text is above other elements */
 }
 
 #canvas-container {
@@ -14,7 +33,6 @@ body, html {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f7ffb3, #ffffff); /* Light yellow gradient */
 }
 
 /* Carousel controls */
@@ -25,18 +43,28 @@ body, html {
   display: flex;
   justify-content: space-between;
   transform: translateY(-50%);
+  opacity: 1.0;
 }
 
 .carousel-controls button {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
+  background-size: contain; /* Ensure the image fits within the button */
+  background-repeat: no-repeat; /* Prevent image repetition */
+  background-color: transparent;
   border: none;
-  padding: 10px 20px;
+  padding: 50px; /* Adjust padding for proper image sizing */
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s;
+}
+
+/* Set images for each button */
+#prev {
+  background-image: url("/pompurin_button.png"); /* Replace with your image path */
+}
+
+#next {
+  background-image: url("/pompurin_button.png"); /* Replace with your image path */
 }
 
 .carousel-controls button:hover {
-  background-color: rgba(247, 255, 179, 0.8);
+  transform: translate(0, -5px);
 }

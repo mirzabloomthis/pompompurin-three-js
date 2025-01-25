@@ -3,7 +3,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xf7ffb3);
+//scene.background = new THREE.Color(0xf7ffb3);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0, 0, 5);
 
@@ -28,9 +28,9 @@ scene.add(directionalLight);
 
 let isTransitioning = false;
 let transitionProgress = 0;
-const TRANSITION_DURATION = 90;
+const TRANSITION_DURATION = 60;
 const ROTATION_ANGLE = Math.PI; // Full horizontal rotation
-const TRANSITION_DISTANCE = 10;
+const TRANSITION_DISTANCE = Math.PI * 2; // Distance between models during transition
 const SPIN_ROTATIONS = 2; // Number of full spins during transition
 
 const loader = new GLTFLoader();
