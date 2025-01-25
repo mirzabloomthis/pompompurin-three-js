@@ -28,10 +28,7 @@ scene.add(directionalLight);
 
 let isTransitioning = false;
 let transitionProgress = 0;
-const TRANSITION_DURATION = 60;
-const ROTATION_ANGLE = Math.PI; // Full horizontal rotation
-const TRANSITION_DISTANCE = Math.PI * 2; // Distance between models during transition
-const SPIN_ROTATIONS = 2; // Number of full spins during transition
+const TRANSITION_DURATION = 90;
 
 const loader = new GLTFLoader();
 const modelPaths = [
@@ -53,7 +50,6 @@ modelPaths.forEach((path, index) => {
       model.position.set(0, 0, 0);
       models.push(model);
       scene.add(model);
-      
       model.visible = (index === 0);
     },
     undefined,
@@ -75,11 +71,21 @@ function performTransition() {
 
   const smoothProgress = Math.sin(progress * Math.PI);
 
-  currentModel.position.x = transitionDirection * smoothProgress * TRANSITION_DISTANCE;
-  nextModel.position.x = transitionDirection * (1 - smoothProgress) * TRANSITION_DISTANCE;
+  // Circular movement parameters
+  const radius = 5; // Distance from the center (adjust as needed)
+  const angle = progress * 2 * Math.PI; // Full 360-degree rotation
 
-  currentModel.rotation.y = smoothProgress * ROTATION_ANGLE * transitionDirection;
-  nextModel.rotation.y = (1 - smoothProgress) * ROTATION_ANGLE * transitionDirection;
+  // Move current model in a circular path
+  currentModel.position.x = radius * Math.cos(angle + Math.PI / 2); // Offset to make the model start from the left
+  currentModel.position.z = radius * Math.sin(angle + Math.PI / 2); // Offset to make the model start from the top
+
+  // Move next model in a circular path in the opposite direction
+  nextModel.position.x = radius * Math.cos(angle - Math.PI / 2); // Offset to make the next model appear from the other side
+  nextModel.position.z = radius * Math.sin(angle - Math.PI / 2); // Same offset as above for smooth transition
+
+  // Rotate the current model around its own axis (for 360-degree effect)
+  currentModel.rotation.y = smoothProgress * 2 * Math.PI; // 360 degrees rotation around its own axis
+  nextModel.rotation.y = (1 - smoothProgress) * 2 * Math.PI; // Next model starts with no rotation and ends with full rotation
 
   currentModel.visible = progress < 1.0;
 
@@ -90,8 +96,8 @@ function performTransition() {
 
     models.forEach((model, index) => {
       model.visible = index === currentSlide;
-      model.position.set(0, 0, 0);
-      model.rotation.set(0, 0, 0);
+      model.position.set(0, 0, 0); // Reset the position for the next transition
+      model.rotation.set(0, 0, 0); // Reset the rotation for the next transition
     });
   }
 }
