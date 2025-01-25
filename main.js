@@ -28,14 +28,16 @@ scene.add(directionalLight);
 
 let isTransitioning = false;
 let transitionProgress = 0;
-const TRANSITION_DURATION = 60;
-const TRANSITION_DISTANCE = 10; // Distance to move models during transition
+const TRANSITION_DURATION = 90;
+const ROTATION_ANGLE = Math.PI; // Full horizontal rotation
+const TRANSITION_DISTANCE = 10;
+const SPIN_ROTATIONS = 2; // Number of full spins during transition
 
 const loader = new GLTFLoader();
 const modelPaths = [
-  "models/model_1/scene.gltf",
-  "models/model_2/scene.gltf",
   "models/model_3/scene.gltf",
+  "models/model_2/scene.gltf",
+  "models/model_1/scene.gltf",
 ];
 const models = [];
 let currentSlide = 0;
@@ -71,31 +73,26 @@ function performTransition() {
   const nextModelIndex = (currentSlide + transitionDirection + maxSlides) % maxSlides;
   const nextModel = models[nextModelIndex];
 
-  // Smooth transition using sine interpolation
   const smoothProgress = Math.sin(progress * Math.PI);
-  
-  // Move current model out
-  currentModel.position.x = -transitionDirection * smoothProgress * TRANSITION_DISTANCE;
-  
-  // Move next model in
-  nextModel.position.x = transitionDirection * (1 - smoothProgress) * TRANSITION_DISTANCE;
-  
-  // Ensure both models are visible during transition
-  currentModel.visible = true;
-  nextModel.visible = true;
 
-  // When transition is complete
+  currentModel.position.x = transitionDirection * smoothProgress * TRANSITION_DISTANCE;
+  nextModel.position.x = transitionDirection * (1 - smoothProgress) * TRANSITION_DISTANCE;
+
+  currentModel.rotation.y = smoothProgress * ROTATION_ANGLE * transitionDirection;
+  nextModel.rotation.y = (1 - smoothProgress) * ROTATION_ANGLE * transitionDirection;
+
+  currentModel.visible = progress < 1.0;
+
   if (transitionProgress >= TRANSITION_DURATION) {
     isTransitioning = false;
     transitionProgress = 0;
-    
-    // Reset all model positions and visibility
-    models.forEach((model, index) => {
-      model.position.set(0, 0, 0);
-      model.visible = (index === nextModelIndex);
-    });
-    
     currentSlide = nextModelIndex;
+
+    models.forEach((model, index) => {
+      model.visible = index === currentSlide;
+      model.position.set(0, 0, 0);
+      model.rotation.set(0, 0, 0);
+    });
   }
 }
 
@@ -122,9 +119,3 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
-
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
